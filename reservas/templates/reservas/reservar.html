@@ -1,24 +1,35 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Reservar Mesa</title>
-</head>
-<body>
-    <h1>Reservar Mesa</h1>
-    <form method="post">
-        {% csrf_token %}
-        Nome: <input type="text" name="nome" required><br>
-        E-mail: <input type="email" name="email" required><br>
-        Mesa: 
-        <select name="mesa">
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="nome" class="form-label">Nome:</label>
+        <input type="text" name="nome" id="nome" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="quantidade" class="form-label">Quantidade de Pessoas:</label>
+        <input type="number" name="quantidade" id="quantidade" class="form-control" min="1" max="10" required>
+    </div>
+    <div class="mb-3">
+        <label for="dia" class="form-label">Dia:</label>
+        <input type="date" name="dia" id="dia" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="periodo" class="form-label">Período:</label>
+        <select name="periodo" id="periodo" class="form-select">
+            <option value="almoço">Almoço</option>
+            <option value="jantar">Jantar</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">E-mail:</label>
+        <input type="email" name="email" id="email" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="mesa" class="form-label">Mesa:</label>
+        <select name="mesa" id="mesa" class="form-select">
             {% for mesa in mesas %}
             <option value="{{ mesa.id }}">Mesa {{ mesa.numero }} ({{ mesa.capacidade }} pessoas)</option>
             {% endfor %}
-        </select><br>
-        Data: <input type="date" name="data" required><br>
-        Horário: <input type="time" name="horario" required><br>
-        <button type="submit">Reservar</button>
-    </form>
-</body>
-</html>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Reservar</button>
+</form>
