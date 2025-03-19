@@ -16,7 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from reservas import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.reservar, name='reservar'),  # Página inicial (reserva)
+    path('sucesso/', views.sucesso, name='sucesso'),  # Página de sucesso
 ]
