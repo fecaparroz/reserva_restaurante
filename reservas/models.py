@@ -2,6 +2,13 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from datetime import datetime
 
+class ConfiguracaoRestaurante(models.Model):
+    capacidade_pessoas = models.IntegerField(default=20)  # Reduzido para 20 para testes
+    capacidade_mesas = models.IntegerField(default=3)     # Reduzido para 3 para testes
+    
+    def __str__(self):
+        return f"Configuração: {self.capacidade_mesas} mesas, {self.capacidade_pessoas} pessoas"
+
 class Mesa(models.Model):
     numero = models.IntegerField(unique=True)
     capacidade = models.IntegerField(default=10)
@@ -33,16 +40,10 @@ class Reserva(models.Model):
         # Validação: Garante que a quantidade de pessoas não excede a capacidade da mesa
         if self.quantidade_pessoas > self.mesa.capacidade:
             raise ValidationError(f"A mesa suporta no máximo {self.mesa.capacidade} pessoas.")
-
-        # Validação: Verifica se a mesa já está reservada para o mesmo dia e período
-        reservas_existentes = Reserva.objects.filter(
-            mesa=self.mesa,
-            dia=self.dia,
-            periodo=self.periodo
-        ).exclude(id=self.id)
-        
-        if reservas_existentes.exists():
-            raise ValidationError("Esta mesa já está reservada para este dia e período.")
+            
+        # Validação: Limite de 1 reserva por email
+        if Reserva.objects.filter(email_cliente=self.email_cliente).exclude(id=self.id).exists():
+            raise ValidationError("Você já possui uma reserva. Limite de 1 reserva por email.")
 
     def __str__(self):
         return f"{self.nome_cliente} - {self.quantidade_pessoas} pessoas - {self.periodo} - Mesa {self.mesa.numero}"

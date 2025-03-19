@@ -1,5 +1,15 @@
 from django.contrib import admin
-from .models import Mesa, Reserva
+from .models import Mesa, Reserva, ConfiguracaoRestaurante
+
+@admin.register(ConfiguracaoRestaurante)
+class ConfiguracaoRestauranteAdmin(admin.ModelAdmin):
+    list_display = ('capacidade_pessoas', 'capacidade_mesas')
+    fieldsets = (
+        ('Capacidade do Restaurante', {
+            'fields': ('capacidade_pessoas', 'capacidade_mesas'),
+            'description': 'Configure a capacidade máxima do restaurante por período (almoço/jantar)'
+        }),
+    )
 
 @admin.register(Mesa)
 class MesaAdmin(admin.ModelAdmin):
