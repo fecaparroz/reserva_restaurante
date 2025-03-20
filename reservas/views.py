@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -137,3 +137,47 @@ def gerenciar_reservas(request):
     }
     
     return render(request, 'reservas/gerenciar_reservas.html', context)
+
+def minhas_reservas(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        if email:
+            # Buscar apenas reservas futuras (a partir de hoje)
+            hoje = timezone.now().date()
+            reservas = Reserva.objects.filter(
+                email_cliente=email,
+                dia__gte=hoje
+            ).order_by('dia', 'periodo')
+            
+            return render(request, "reservas/minhas_reservas.html", {
+                "reservas": reservas,
+                "email": email
+            })
+    
+    # Se não for POST ou não tiver email, mostrar formulário de busca
+    return render(request, "reservas/buscar_reservas.html")
+
+def cancelar_reserva_cliente(request, reserva_id):
+    reserva = get_object_or_404(Reserva, id=reserva_id)
+    email = reserva.email_cliente
+    
+    # Liberar a mesa para novas reservas
+    mesa = reserva.mesa
+    mesa.disponivel = True
+    mesa.save()
+    
+    # Excluir a reserva
+    reserva.delete()
+    
+    # Redirecionar para a página de minhas reservas com mensagem de sucesso
+    hoje = timezone.now().date()
+    reservas = Reserva.objects.filter(
+        email_cliente=email,
+        dia__gte=hoje
+    ).order_by('dia', 'periodo')
+    
+    return render(request, "reservas/minhas_reservas.html", {
+        "reservas": reservas,
+        "email": email,
+        "mensagem_sucesso": "Reserva cancelada com sucesso!"
+    })
