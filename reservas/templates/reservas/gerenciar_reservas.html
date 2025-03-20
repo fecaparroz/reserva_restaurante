@@ -35,13 +35,7 @@
                 </div>
                 <div class="card-body">
                     <p>Total de reservas: {{ reservas_almoco.count }}</p>
-                    <p>Total de pessoas: {{ total_pessoas_almoco }} / {{ config.capacidade_pessoas }}</p>
-                    <div class="progress mb-3">
-                        <div class="progress-bar bg-success" role="progressbar" 
-                             style="width: {% widthratio total_pessoas_almoco config.capacidade_pessoas 100 %}%" 
-                             aria-valuenow="{{ total_pessoas_almoco }}" aria-valuemin="0" 
-                             aria-valuemax="{{ config.capacidade_pessoas }}"></div>
-                    </div>
+                    <p>Total de pessoas: {{ total_pessoas_almoco }} / {{ config.capacidade_pessoas|default:"0" }}</p>
                 </div>
             </div>
         </div>
@@ -52,13 +46,7 @@
                 </div>
                 <div class="card-body">
                     <p>Total de reservas: {{ reservas_jantar.count }}</p>
-                    <p>Total de pessoas: {{ total_pessoas_jantar }} / {{ config.capacidade_pessoas }}</p>
-                    <div class="progress mb-3">
-                        <div class="progress-bar bg-primary" role="progressbar" 
-                             style="width: {% widthratio total_pessoas_jantar config.capacidade_pessoas 100 %}%" 
-                             aria-valuenow="{{ total_pessoas_jantar }}" aria-valuemin="0" 
-                             aria-valuemax="{{ config.capacidade_pessoas }}"></div>
-                    </div>
+                    <p>Total de pessoas: {{ total_pessoas_jantar }} / {{ config.capacidade_pessoas|default:"0" }}</p>
                 </div>
             </div>
         </div>
@@ -94,7 +82,7 @@
                             <td>{{ reserva.email_cliente }}</td>
                             <td>{{ reserva.quantidade_pessoas }}</td>
                             <td>
-                                <form method="post" onsubmit="return confirm('Tem certeza que deseja cancelar esta reserva?');">
+                                <form method="post" action="{% url 'gerenciar_reservas' %}" onsubmit="return confirm('Tem certeza que deseja cancelar esta reserva?');">
                                     {% csrf_token %}
                                     <input type="hidden" name="reserva_id" value="{{ reserva.id }}">
                                     <button type="submit" name="cancelar_reserva" class="btn btn-danger btn-sm">Cancelar</button>
@@ -131,7 +119,7 @@
                             <td>{{ reserva.email_cliente }}</td>
                             <td>{{ reserva.quantidade_pessoas }}</td>
                             <td>
-                                <form method="post" onsubmit="return confirm('Tem certeza que deseja cancelar esta reserva?');">
+                                <form method="post" action="{% url 'gerenciar_reservas' %}" onsubmit="return confirm('Tem certeza que deseja cancelar esta reserva?');">
                                     {% csrf_token %}
                                     <input type="hidden" name="reserva_id" value="{{ reserva.id }}">
                                     <button type="submit" name="cancelar_reserva" class="btn btn-danger btn-sm">Cancelar</button>

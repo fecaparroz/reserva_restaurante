@@ -41,9 +41,9 @@ class Reserva(models.Model):
         if self.quantidade_pessoas > self.mesa.capacidade:
             raise ValidationError(f"A mesa suporta no máximo {self.mesa.capacidade} pessoas.")
             
-        # Validação: Limite de 1 reserva por email
-        if Reserva.objects.filter(email_cliente=self.email_cliente).exclude(id=self.id).exists():
-            raise ValidationError("Você já possui uma reserva. Limite de 1 reserva por email.")
+        # Validação: Limite de 1 reserva por email por dia e período
+        if Reserva.objects.filter(email_cliente=self.email_cliente, dia=self.dia, periodo=self.periodo).exclude(id=self.id).exists():
+            raise ValidationError("Você já possui uma reserva para este dia e período. Tente outro dia ou período.")
 
     def __str__(self):
         return f"{self.nome_cliente} - {self.quantidade_pessoas} pessoas - {self.periodo} - Mesa {self.mesa.numero}"

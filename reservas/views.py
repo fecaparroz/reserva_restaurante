@@ -29,9 +29,9 @@ def reservar(request):
             if dia.weekday() == 6:
                 return render(request, "reservas/erro.html", {"mensagem": "O restaurante está fechado aos domingos."})
             
-            # Verifica se o cliente já tem uma reserva
-            if Reserva.objects.filter(email_cliente=email_cliente).exists():
-                return render(request, "reservas/erro.html", {"mensagem": "Você já possui uma reserva. Limite de 1 reserva por email."})
+            # Verifica se o cliente já tem uma reserva para o mesmo dia e período
+            if Reserva.objects.filter(email_cliente=email_cliente, dia=dia, periodo=periodo).exists():
+                return render(request, "reservas/erro.html", {"mensagem": "Você já possui uma reserva para este dia e período. Tente outro dia ou período."})
             
             # Calcula o total de pessoas e mesas já reservadas para este dia e período
             reservas_dia_periodo = Reserva.objects.filter(dia=dia, periodo=periodo)
